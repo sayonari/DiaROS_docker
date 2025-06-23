@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  diaros:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: diaros_container
+    image: diaros:slim
+    
+    # Environment variables
+    environment:
+      # Display settings for GUI applications
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      # API credentials paths
+      - GOOGLE_APPLICATION_CREDENTIALS=/config/google_credentials.json
+      - A3RT_APIKEY=/config/a3rt_apikey.data
+      # ROS2 settings
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - ROS_LOCALHOST_ONLY=${ROS_LOCALHOST_ONLY:-0}
+    
+    # Volume mounts
+    volumes:
+      # X11 socket for GUI
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      # Configuration files (read-only)
+      - ./config:/config:ro
+      # Workspace for DiaROS source code
+      - ./workspace:/workspace
+      # Recordings directory for bag files
+      - ./recordings:/recordings
+      # Share timezone with host
+      - /etc/localtime:/etc/localtime:ro
+    
+    # Device access for audio
+    devices:
+      - /dev/snd:/dev/snd
+    
+    # Network mode
+    network_mode: host
+    
+    # Required for audio device access
+    privileged: true
+    
+    # Keep container running
+    stdin_open: true
+    tty: true
+    
+    # Resource limits (optional, adjust as needed)
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 4G
+
+# Optional: Define named volumes if needed
+volumes:
+  recordings:
+    driver: local

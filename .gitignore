@@ -1,0 +1,62 @@
+# Environment variables
+.env
+
+# API credentials and sensitive data
+config/google_credentials.json
+config/a3rt_apikey.data
+config/*.json
+config/*.key
+config/*.pem
+
+# DiaROS workspace (user should add their own)
+workspace/*
+!workspace/.gitkeep
+
+# Recording files
+recordings/*.db3
+recordings/*.mcap
+recordings/*.bag
+recordings/*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ROS2
+install/
+log/
+build/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Docker
+.docker/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
