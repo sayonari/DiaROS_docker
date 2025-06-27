@@ -76,8 +76,8 @@ RUN pip3 install --no-cache-dir \
     pyyaml
 
 # Install PyTorch and transformers separately to handle index URL
-# Force reinstall to avoid sympy conflicts
-RUN pip3 install --no-cache-dir --force-reinstall torch --index-url https://download.pytorch.org/whl/cpu && \
+# Use ignore-installed to bypass system sympy
+RUN pip3 install --no-cache-dir --ignore-installed torch --index-url https://download.pytorch.org/whl/cpu && \
     pip3 install --no-cache-dir transformers sentencepiece fugashi unidic-lite
 
 # Install VOICEVOX Core (lightweight version without GUI)
