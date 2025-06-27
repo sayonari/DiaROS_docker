@@ -65,15 +65,21 @@ RUN python3 -m pip install --upgrade pip && \
 # Install pyaudio with its dependencies
 RUN pip3 install --no-cache-dir pyaudio
 
-# Install other Python packages (skip aubio due to compatibility issues)
+# Install other Python packages
 RUN pip3 install --no-cache-dir \
     # Speech recognition
     SpeechRecognition \
+    # Audio processing
+    playsound \
+    webrtcvad \
     # Other utilities
     numpy \
     scipy \
     requests \
     pyyaml
+
+# Install aubio Python bindings (try binary wheel first, fallback to source)
+RUN pip3 install --no-cache-dir aubio || echo "Warning: aubio installation failed, using system library only"
 
 # Install PyTorch and transformers separately to handle index URL
 # Use ignore-installed to bypass system sympy

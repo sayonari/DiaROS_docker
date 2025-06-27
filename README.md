@@ -182,7 +182,21 @@ DiaROS_docker/
 
 ## 6. トラブルシューティング
 
-### 6.1 HuggingFaceモデルのアクセスエラー
+### 6.1 Pythonパッケージの不足エラー
+
+`ModuleNotFoundError: No module named 'playsound'`などのエラーが出る場合：
+
+```bash
+# コンテナ内で以下を実行
+pip3 install playsound webrtcvad aubio
+```
+
+または、Dockerイメージを再ビルド：
+```bash
+docker-compose build --no-cache
+```
+
+### 6.2 HuggingFaceモデルのアクセスエラー
 
 DiaROSの起動時に以下のようなエラーが出る場合：
 ```
@@ -191,7 +205,18 @@ OSError: You are trying to access a gated repo.
 
 これは音声認識モデルがアクセス制限されているためです。以下の方法で解決できます：
 
-**方法1: モデルを変更する（推奨）**
+**方法1: HuggingFaceでモデルの利用規約に同意する**
+
+1. [HuggingFace](https://huggingface.co/)でアカウントを作成
+2. [モデルページ](https://huggingface.co/SiRoZaRuPa/japanese-HuBERT-base-VADLess-ASR-RSm)にアクセス
+3. 利用規約に同意（"Agree and access repository"ボタンをクリック）
+4. コンテナ内でHuggingFaceにログイン：
+   ```bash
+   pip install huggingface-hub
+   huggingface-cli login
+   ```
+
+**方法2: モデルを変更する（代替案）**
 
 `workspace/DiaROS_py/diaros/automaticSpeechRecognition.py`の177行目を編集：
 
@@ -209,15 +234,7 @@ cd /workspace/DiaROS_py
 python3 -m pip install .
 ```
 
-**方法2: HuggingFaceにログインする**
-
-HuggingFaceアカウントを作成し、コンテナ内でログイン：
-```bash
-pip install huggingface-hub
-huggingface-cli login
-```
-
-### 6.2 macOSでGUIが表示されない場合
+### 6.3 macOSでGUIが表示されない場合
 
 セットアップ手順の「2. macOSの事前準備」を実行していない場合は、以下を確認してください：
 
@@ -246,11 +263,26 @@ huggingface-cli login
    docker-compose up -d
    ```
 
-### 6.3 音声デバイスが認識されない場合
+### 6.4 音声デバイスが認識されない場合
 
-Docker設定で`privileged: true`が有効になっていることを確認してください。
+`OSError: No Default Input Device Available`エラーが出る場合：
 
-### 6.4 メモリ不足エラー
+**macOSの場合:**
+1. macOSのシステム環境設定 → セキュリティとプライバシー → プライバシー → マイク
+2. Docker Desktopがマイクへのアクセスを許可されているか確認
+3. 許可されていない場合は、チェックボックスをオンにする
+4. Docker Desktopを再起動
+
+**Linuxの場合:**
+```bash
+# ホストでオーディオグループに追加
+sudo usermod -a -G audio $USER
+# 再ログインまたは再起動
+```
+
+Docker設定で`privileged: true`が有効になっていることも確認してください。
+
+### 6.5 メモリ不足エラー
 
 docker-compose.ymlのresource limitsを調整してください。
 
