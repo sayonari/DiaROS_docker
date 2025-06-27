@@ -2,7 +2,21 @@
 
 リアルタイム音声対話システム（DiaROS）のためのDocker環境です。ROS2 Humble環境と音声処理に必要なツールを含む軽量なDockerイメージを提供します。
 
-## 特徴
+## 目次
+
+1. [特徴](#1-特徴)
+2. [必要な環境](#2-必要な環境)
+3. [セットアップ](#3-セットアップ)
+4. [使用方法](#4-使用方法)
+5. [ディレクトリ構造](#5-ディレクトリ構造)
+6. [トラブルシューティング](#6-トラブルシューティング)
+7. [Docker Hubでの配布](#7-docker-hubでの配布)
+8. [ライセンス](#8-ライセンス)
+9. [貢献](#9-貢献)
+10. [参考資料](#10-参考資料)
+11. [付録：APIキーの使用（オプション）](#11-付録apiキーの使用オプション)
+
+## 1. 特徴
 
 - **軽量なROS2環境**: `ros-humble-ros-base`ベースで約3-4GBのイメージサイズ
 - **音声処理対応**: PyAudio、aubio、VOICEVOX Core等の音声処理ライブラリを含む
@@ -12,7 +26,7 @@
 - **デバッグツール**: rqt系ツールとrosbag2によるデータフロー監視・記録機能
 - **日本語対応**: 日本語ロケール設定済み
 
-## 必要な環境
+## 2. 必要な環境
 
 - Docker Desktop（Docker 20.10以降）
 - Docker Compose 2.0以降（Docker Desktopに含まれています）
@@ -21,16 +35,16 @@
 
 **注意**: macOSやWindowsでは、Docker Desktopが起動していることを確認してください。
 
-## セットアップ
+## 3. セットアップ
 
-### 1. リポジトリのクローン
+### 3.1 リポジトリのクローン
 
 ```bash
 git clone https://github.com/sayonari/DiaROS_docker.git
 cd DiaROS_docker
 ```
 
-### 2. macOSの事前準備（macOSユーザーのみ）
+### 3.2 macOSの事前準備（macOSユーザーのみ）
 
 macOSでGUIアプリケーションを使用する場合、XQuartzの設定が必要です：
 
@@ -64,7 +78,7 @@ export PATH="/opt/X11/bin:$PATH"
 xhost +localhost
 ```
 
-### 3. DiaROSソースコードの配置
+### 3.3 DiaROSソースコードの配置
 
 DiaROSのソースコードをworkspaceディレクトリにコピーまたはクローンしてください：
 
@@ -81,7 +95,7 @@ rm -rf temp
 cd ..
 ```
 
-### 4. 初期セットアップ
+### 3.4 初期セットアップ
 
 ```bash
 ./scripts/setup.sh
@@ -95,9 +109,9 @@ cd ..
 **注意**: macOSの場合、setup.shが`.env`ファイルのDISPLAY変数を自動的に`host.docker.internal:0`に設定します。
 
 
-## 使用方法
+## 4. 使用方法
 
-### コンテナの起動
+### 4.1 コンテナの起動
 
 ```bash
 ./scripts/run.sh
@@ -121,7 +135,7 @@ python3 -m pip install .
 ros2 launch diaros_package sdsmod.launch.py
 ```
 
-### モニタリングツール
+### 4.2 モニタリングツール
 
 別のターミナルで以下を実行：
 
@@ -136,7 +150,7 @@ ros2 launch diaros_package sdsmod.launch.py
 - rqt_bag: 記録データの確認
 - ros2 bag record: データの記録
 
-### データの記録
+### 4.3 データの記録
 
 ```bash
 # 全トピックを記録
@@ -148,7 +162,7 @@ ros2 bag record /speech_input /recognition_result /dialog_response
 
 記録されたデータは`./recordings`ディレクトリに保存されます。
 
-## ディレクトリ構造
+## 5. ディレクトリ構造
 
 ```
 DiaROS_docker/
@@ -166,9 +180,9 @@ DiaROS_docker/
 └── recordings/            # bag記録ファイル
 ```
 
-## トラブルシューティング
+## 6. トラブルシューティング
 
-### HuggingFaceモデルのアクセスエラー
+### 6.1 HuggingFaceモデルのアクセスエラー
 
 DiaROSの起動時に以下のようなエラーが出る場合：
 ```
@@ -203,7 +217,7 @@ pip install huggingface-hub
 huggingface-cli login
 ```
 
-### macOSでGUIが表示されない場合
+### 6.2 macOSでGUIが表示されない場合
 
 セットアップ手順の「2. macOSの事前準備」を実行していない場合は、以下を確認してください：
 
@@ -232,15 +246,15 @@ huggingface-cli login
    docker-compose up -d
    ```
 
-### 音声デバイスが認識されない場合
+### 6.3 音声デバイスが認識されない場合
 
 Docker設定で`privileged: true`が有効になっていることを確認してください。
 
-### メモリ不足エラー
+### 6.4 メモリ不足エラー
 
 docker-compose.ymlのresource limitsを調整してください。
 
-## Docker Hubでの配布
+## 7. Docker Hubでの配布
 
 ビルド済みイメージをDocker Hubで公開する場合：
 
@@ -261,31 +275,31 @@ docker push yourusername/diaros:v1.0.0
 docker pull yourusername/diaros:latest
 ```
 
-## ライセンス
+## 8. ライセンス
 
 DiaROSのライセンスに従います。詳細はDiaROSのドキュメントを参照してください。
 
-## 貢献
+## 9. 貢献
 
 イシューやプルリクエストを歓迎します。
 
-## 参考資料
+## 10. 参考資料
 
 - [DiaROS公式ドキュメント](https://github.com/yourusername/DiaROS_imamoto)
 - [ROS2 Humble Documentation](https://docs.ros.org/en/humble/)
 - [Docker Documentation](https://docs.docker.com/)
 
-## 付録：APIキーの使用（オプション）
+## 11. 付録：APIキーの使用（オプション）
 
 現在のDiaROSはローカルモデルを使用するため、APIキーは不要です。ただし、以下のAPIを使用したい場合は設定できます：
 
-### Google Cloud Speech-to-Text API（オプション）
+### 11.1 Google Cloud Speech-to-Text API（オプション）
 ```bash
 # Google Cloud認証情報をconfigディレクトリに配置
 cp /path/to/your/google_credentials.json config/
 ```
 
-### A3RT Talk API（オプション）
+### 11.2 A3RT Talk API（オプション）
 ```bash
 # A3RT APIキーをconfigディレクトリに配置
 cp /path/to/your/a3rt_apikey.data config/
