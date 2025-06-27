@@ -49,6 +49,12 @@ open -a XQuartz
 
 # ローカルホストからの接続を許可
 xhost +localhost
+
+# もし「xhost: command not found」エラーが出る場合は：
+# XQuartzがインストールされているか確認し、以下を実行：
+/opt/X11/bin/xhost +localhost
+# または、パスを通す：
+export PATH="/opt/X11/bin:$PATH"
 ```
 
 ### 3. DiaROSソースコードの配置
@@ -201,7 +207,10 @@ huggingface-cli login
 
 2. **xhostの設定を確認**
    ```bash
-   xhost +localhost
+   # XQuartzのパスが通っていない場合は：
+   /opt/X11/bin/xhost +localhost
+   # または
+   export PATH="/opt/X11/bin:$PATH" && xhost +localhost
    ```
 
 3. **環境変数の確認**
