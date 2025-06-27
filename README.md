@@ -132,6 +132,41 @@ DiaROS_docker/
 
 ## トラブルシューティング
 
+### HuggingFaceモデルのアクセスエラー
+
+DiaROSの起動時に以下のようなエラーが出る場合：
+```
+OSError: You are trying to access a gated repo.
+```
+
+これは音声認識モデルがアクセス制限されているためです。以下の方法で解決できます：
+
+**方法1: モデルを変更する（推奨）**
+
+`workspace/DiaROS_py/diaros/automaticSpeechRecognition.py`の177行目を編集：
+
+```python
+# 変更前
+MODEL_ID = 'SiRoZaRuPa/japanese-HuBERT-base-VADLess-ASR-RSm'
+
+# 変更後（rinnaの公開モデルを使用）
+MODEL_ID = 'rinna/japanese-hubert-base'
+```
+
+変更後、Pythonモジュールを再インストール：
+```bash
+cd /workspace/DiaROS_py
+python3 -m pip install .
+```
+
+**方法2: HuggingFaceにログインする**
+
+HuggingFaceアカウントを作成し、コンテナ内でログイン：
+```bash
+pip install huggingface-hub
+huggingface-cli login
+```
+
 ### macOSでGUIが表示されない場合
 
 ```bash
