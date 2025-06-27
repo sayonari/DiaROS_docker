@@ -48,13 +48,20 @@ open -a XQuartz
 # 3. XQuartzを再起動（必要な場合）
 
 # ローカルホストからの接続を許可
+# まずDISPLAY環境変数を設定
+export DISPLAY=:0
 xhost +localhost
 
 # もし「xhost: command not found」エラーが出る場合は：
-# XQuartzがインストールされているか確認し、以下を実行：
 /opt/X11/bin/xhost +localhost
-# または、パスを通す：
+
+# もし「unable to open display」エラーが出る場合は：
+# 1. XQuartzが起動していることを確認
+# 2. 新しいターミナルを開いて再試行
+# 3. または以下を実行：
+export DISPLAY=:0
 export PATH="/opt/X11/bin:$PATH"
+xhost +localhost
 ```
 
 ### 3. DiaROSソースコードの配置
