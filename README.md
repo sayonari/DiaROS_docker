@@ -30,7 +30,28 @@ git clone https://github.com/sayonari/DiaROS_docker.git
 cd DiaROS_docker
 ```
 
-### 2. DiaROSソースコードの配置
+### 2. macOSの事前準備（macOSユーザーのみ）
+
+macOSでGUIアプリケーションを使用する場合、XQuartzの設定が必要です：
+
+```bash
+# XQuartzをインストール（まだの場合）
+brew install --cask xquartz
+# または https://www.xquartz.org/ からダウンロード
+
+# XQuartzを起動
+open -a XQuartz
+
+# XQuartzの設定を変更
+# 1. XQuartzメニュー → 環境設定 → セキュリティタブ
+# 2. 「ネットワーク・クライアントからの接続を許可」にチェック
+# 3. XQuartzを再起動（必要な場合）
+
+# ローカルホストからの接続を許可
+xhost +localhost
+```
+
+### 3. DiaROSソースコードの配置
 
 DiaROSのソースコードをworkspaceディレクトリにコピーまたはクローンしてください：
 
@@ -47,7 +68,7 @@ rm -rf temp
 cd ..
 ```
 
-### 3. 初期セットアップ
+### 4. 初期セットアップ
 
 ```bash
 ./scripts/setup.sh
@@ -57,6 +78,8 @@ cd ..
 - 環境変数ファイル（.env）の作成
 - 必要なディレクトリの作成
 - Dockerイメージのビルド
+
+**注意**: macOSの場合、setup.shが`.env`ファイルのDISPLAY変数を自動的に`host.docker.internal:0`に設定します。
 
 
 ## 使用方法
@@ -169,35 +192,25 @@ huggingface-cli login
 
 ### macOSでGUIが表示されない場合
 
-XQuartzの設定が必要です：
+セットアップ手順の「2. macOSの事前準備」を実行していない場合は、以下を確認してください：
 
-1. **XQuartzをインストール**（まだの場合）
+1. **XQuartzが起動しているか確認**
    ```bash
-   brew install --cask xquartz
-   ```
-   または[公式サイト](https://www.xquartz.org/)からダウンロード
-
-2. **XQuartzを起動**
-   ```bash
-   open -a XQuartz
+   pgrep -x XQuartz || open -a XQuartz
    ```
 
-3. **XQuartzの設定を変更**
-   - XQuartzメニュー → 環境設定 → セキュリティタブ
-   - 「ネットワーク・クライアントからの接続を許可」にチェック
-
-4. **ローカルホストからの接続を許可**
+2. **xhostの設定を確認**
    ```bash
    xhost +localhost
    ```
 
-5. **環境変数の確認**
-   `.env`ファイルで以下が設定されていることを確認：
-   ```
-   DISPLAY=host.docker.internal:0
+3. **環境変数の確認**
+   ```bash
+   cat .env | grep DISPLAY
+   # DISPLAY=host.docker.internal:0 になっていることを確認
    ```
 
-6. **コンテナを再起動**
+4. **それでも表示されない場合はコンテナを再起動**
    ```bash
    docker-compose down
    docker-compose up -d
