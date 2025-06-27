@@ -1,5 +1,5 @@
 # DiaROS Docker Image - Lightweight ROS2 Humble with Speech Dialog System
-FROM osrf/ros:humble-ros-base
+FROM ros:humble-ros-base
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
