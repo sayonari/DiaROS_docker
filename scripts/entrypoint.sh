@@ -16,16 +16,7 @@ export DISPLAY=${DISPLAY:-:0}
 mkdir -p /recordings
 mkdir -p /config
 
-# Check if API credentials are present
-if [ ! -f "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
-    echo "Warning: Google Cloud credentials not found at $GOOGLE_APPLICATION_CREDENTIALS"
-    echo "Please mount your credentials file to /config/google_credentials.json"
-fi
-
-if [ ! -f "$A3RT_APIKEY" ]; then
-    echo "Warning: A3RT API key not found at $A3RT_APIKEY"
-    echo "Please mount your API key file to /config/a3rt_apikey.data"
-fi
+# Note: API credentials are optional as DiaROS now uses local models by default
 
 # Print ROS2 environment info
 echo "==================================="

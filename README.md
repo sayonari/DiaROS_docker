@@ -79,7 +79,7 @@ source ./install/local_setup.bash
 
 # Pythonモジュールのインストール
 cd ../DiaROS_py
-python3 -m pip install . --user
+python3 -m pip install .
 
 # システムの起動
 ros2 launch diaros_package sdsmod.launch.py
