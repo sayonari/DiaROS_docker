@@ -81,11 +81,19 @@ RUN pip3 install --no-cache-dir --ignore-installed torch --index-url https://dow
     pip3 install --no-cache-dir transformers sentencepiece fugashi unidic-lite
 
 # Install VOICEVOX Core (lightweight version without GUI)
+# Detect architecture and download appropriate wheel
 RUN mkdir -p /opt/voicevox && \
     cd /opt/voicevox && \
-    wget https://github.com/VOICEVOX/voicevox_core/releases/download/0.14.4/voicevox_core-0.14.4+cpu-cp38-abi3-linux_x86_64.whl && \
-    pip3 install voicevox_core-0.14.4+cpu-cp38-abi3-linux_x86_64.whl && \
-    rm voicevox_core-0.14.4+cpu-cp38-abi3-linux_x86_64.whl
+    ARCH=$(uname -m) && \
+    if [ "$ARCH" = "x86_64" ]; then \
+        wget https://github.com/VOICEVOX/voicevox_core/releases/download/0.14.4/voicevox_core-0.14.4+cpu-cp38-abi3-linux_x86_64.whl && \
+        pip3 install voicevox_core-0.14.4+cpu-cp38-abi3-linux_x86_64.whl && \
+        rm voicevox_core-0.14.4+cpu-cp38-abi3-linux_x86_64.whl; \
+    elif [ "$ARCH" = "aarch64" ]; then \
+        echo "VOICEVOX Core is not available for ARM64 architecture. Skipping installation."; \
+    else \
+        echo "Unsupported architecture: $ARCH"; \
+    fi
 
 # Create workspace directory
 RUN mkdir -p /workspace
