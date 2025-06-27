@@ -72,6 +72,10 @@ RUN pip3 install --no-cache-dir \
     # Audio processing
     playsound \
     webrtcvad \
+    librosa \
+    soundfile \
+    # GUI support for playsound (skip if fails)
+    # pygobject \
     # Other utilities
     numpy \
     scipy \

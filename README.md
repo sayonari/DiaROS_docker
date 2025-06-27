@@ -184,11 +184,11 @@ DiaROS_docker/
 
 ### 6.1 Pythonパッケージの不足エラー
 
-`ModuleNotFoundError: No module named 'playsound'`などのエラーが出る場合：
+`ModuleNotFoundError: No module named 'librosa'`などのエラーが出る場合：
 
 ```bash
 # コンテナ内で以下を実行
-pip3 install playsound webrtcvad aubio
+pip3 install librosa soundfile pygobject playsound webrtcvad aubio
 ```
 
 または、Dockerイメージを再ビルド：
@@ -201,19 +201,23 @@ docker-compose build --no-cache
 DiaROSの起動時に以下のようなエラーが出る場合：
 ```
 OSError: You are trying to access a gated repo.
+huggingface_hub.errors.LocalTokenNotFoundError: Token is required
 ```
 
-これは音声認識モデルがアクセス制限されているためです。以下の方法で解決できます：
+これはモデルがアクセス制限されているためです。以下の方法で解決できます：
 
-**方法1: HuggingFaceでモデルの利用規約に同意する**
+**方法1: HuggingFaceでモデルの利用規約に同意する（推奨）**
 
 1. [HuggingFace](https://huggingface.co/)でアカウントを作成
-2. [モデルページ](https://huggingface.co/SiRoZaRuPa/japanese-HuBERT-base-VADLess-ASR-RSm)にアクセス
-3. 利用規約に同意（"Agree and access repository"ボタンをクリック）
+2. 以下のモデルページにアクセスして利用規約に同意：
+   - [音声認識モデル](https://huggingface.co/SiRoZaRuPa/japanese-HuBERT-base-VADLess-ASR-RSm)
+   - [ターンテイキングモデル](https://huggingface.co/Yosato/Wav2Vec2-deberta-keep-continue)（必要な場合）
+3. [アクセストークン](https://huggingface.co/settings/tokens)を作成
 4. コンテナ内でHuggingFaceにログイン：
    ```bash
    pip install huggingface-hub
    huggingface-cli login
+   # トークンを入力
    ```
 
 **方法2: モデルを変更する（代替案）**
