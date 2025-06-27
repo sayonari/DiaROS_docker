@@ -169,13 +169,39 @@ huggingface-cli login
 
 ### macOSでGUIが表示されない場合
 
-```bash
-# XQuartzを起動
-open -a XQuartz
+XQuartzの設定が必要です：
 
-# ローカルホストからの接続を許可
-xhost +localhost
-```
+1. **XQuartzをインストール**（まだの場合）
+   ```bash
+   brew install --cask xquartz
+   ```
+   または[公式サイト](https://www.xquartz.org/)からダウンロード
+
+2. **XQuartzを起動**
+   ```bash
+   open -a XQuartz
+   ```
+
+3. **XQuartzの設定を変更**
+   - XQuartzメニュー → 環境設定 → セキュリティタブ
+   - 「ネットワーク・クライアントからの接続を許可」にチェック
+
+4. **ローカルホストからの接続を許可**
+   ```bash
+   xhost +localhost
+   ```
+
+5. **環境変数の確認**
+   `.env`ファイルで以下が設定されていることを確認：
+   ```
+   DISPLAY=host.docker.internal:0
+   ```
+
+6. **コンテナを再起動**
+   ```bash
+   docker-compose down
+   docker-compose up -d
+   ```
 
 ### 音声デバイスが認識されない場合
 

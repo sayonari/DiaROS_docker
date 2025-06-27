@@ -30,6 +30,20 @@ if ! docker ps | grep -q diaros_container; then
     exit 1
 fi
 
+# Check for XQuartz on macOS
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    if ! command -v xquartz &> /dev/null && ! pgrep -x "XQuartz" > /dev/null; then
+        echo "Warning: XQuartz may not be running."
+        echo "Please ensure XQuartz is installed and running:"
+        echo "  1. Install XQuartz from https://www.xquartz.org/"
+        echo "  2. Open XQuartz"
+        echo "  3. In XQuartz preferences, go to Security tab"
+        echo "  4. Check 'Allow connections from network clients'"
+        echo "  5. Run: xhost +localhost"
+        echo ""
+    fi
+fi
+
 # Main loop
 while true; do
     show_menu
