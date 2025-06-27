@@ -42,20 +42,10 @@ mkdir -p config
 mkdir -p recordings
 mkdir -p workspace
 
-# Check for API credentials
+# Note about API credentials (optional)
 echo ""
-echo "Checking for API credentials..."
-echo "--------------------------------"
-
-if [ ! -f config/google_credentials.json ]; then
-    echo "⚠️  Google Cloud credentials not found!"
-    echo "   Please copy your credentials to: config/google_credentials.json"
-fi
-
-if [ ! -f config/a3rt_apikey.data ]; then
-    echo "⚠️  A3RT API key not found!"
-    echo "   Please copy your API key to: config/a3rt_apikey.data"
-fi
+echo "Note: DiaROS now uses local models by default"
+echo "API credentials are optional for backward compatibility"
 
 # Build Docker image
 echo ""
@@ -70,8 +60,7 @@ echo "==================================="
 echo ""
 echo "Next steps:"
 echo "1. Copy your DiaROS source code to ./workspace/"
-echo "2. Place API credentials in ./config/"
-echo "3. Run: ./scripts/run.sh"
+echo "2. Run: ./scripts/run.sh"
 echo ""
 echo "To start the container:"
 echo "  ./scripts/run.sh"

@@ -13,9 +13,9 @@ services:
       # Display settings for GUI applications
       - DISPLAY=${DISPLAY}
       - QT_X11_NO_MITSHM=1
-      # API credentials paths
-      - GOOGLE_APPLICATION_CREDENTIALS=/config/google_credentials.json
-      - A3RT_APIKEY=/config/a3rt_apikey.data
+      # Optional API credentials paths (for backward compatibility)
+      # - GOOGLE_APPLICATION_CREDENTIALS=/config/google_credentials.json
+      # - A3RT_APIKEY=/config/a3rt_apikey.data
       # ROS2 settings
       - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
       - ROS_LOCALHOST_ONLY=${ROS_LOCALHOST_ONLY:-0}

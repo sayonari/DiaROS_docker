@@ -65,11 +65,14 @@ RUN pip3 install --no-cache-dir \
     pyaudio \
     aubio \
     # Speech recognition
-    google-cloud-speech \
     SpeechRecognition \
     # Machine learning (CPU version to save space)
     torch --index-url https://download.pytorch.org/whl/cpu \
     transformers \
+    # Japanese language models dependencies
+    sentencepiece \
+    fugashi \
+    unidic-lite \
     # Other utilities
     numpy \
     scipy \

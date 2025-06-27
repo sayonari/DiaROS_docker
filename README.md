@@ -6,6 +6,9 @@
 
 - **軽量なROS2環境**: `ros-humble-ros-base`ベースで約3-4GBのイメージサイズ
 - **音声処理対応**: PyAudio、aubio、VOICEVOX Core等の音声処理ライブラリを含む
+- **ローカルAI対応**: HuggingFaceの日本語モデルによる完全ローカル動作
+  - 音声認識: japanese-HuBERT-base-VADLess-ASR
+  - 応答生成: rinna/japanese-gpt2-small
 - **デバッグツール**: rqt系ツールとrosbag2によるデータフロー監視・記録機能
 - **日本語対応**: 日本語ロケール設定済み
 
@@ -21,11 +24,22 @@
 ### 1. リポジトリのクローン
 
 ```bash
-git clone https://github.com/yourusername/DiaROS_docker.git
+git clone https://github.com/sayonari/DiaROS_docker.git
 cd DiaROS_docker
 ```
 
-### 2. 初期セットアップ
+### 2. DiaROSソースコードの配置
+
+DiaROSのソースコードをworkspaceディレクトリにコピーまたはクローンしてください：
+
+```bash
+# 例: GitHubからクローン
+cd workspace
+git clone https://github.com/sayonari/DiaROS_imamoto.git .
+cd ..
+```
+
+### 3. 初期セットアップ
 
 ```bash
 ./scripts/setup.sh
@@ -36,28 +50,6 @@ cd DiaROS_docker
 - 必要なディレクトリの作成
 - Dockerイメージのビルド
 
-### 3. APIキーの設定
-
-以下のAPIキーをconfigディレクトリに配置してください：
-
-```bash
-# Google Cloud Speech-to-Text APIの認証情報
-cp /path/to/your/google_credentials.json config/
-
-# A3RT Talk APIのキー
-cp /path/to/your/a3rt_apikey.data config/
-```
-
-### 4. DiaROSソースコードの配置
-
-DiaROSのソースコードをworkspaceディレクトリにコピーまたはクローンしてください：
-
-```bash
-# 例: GitHubからクローン
-cd workspace
-git clone https://github.com/yourusername/DiaROS_imamoto.git .
-cd ..
-```
 
 ## 使用方法
 
@@ -125,9 +117,7 @@ DiaROS_docker/
 │   ├── run.sh            # 実行スクリプト
 │   ├── monitor.sh        # モニタリングスクリプト
 │   └── entrypoint.sh     # コンテナエントリーポイント
-├── config/                # 設定ファイル（APIキー等）
-│   ├── google_credentials.json  # Google Cloud認証情報
-│   └── a3rt_apikey.data        # A3RT APIキー
+├── config/                # 設定ファイル（オプション）
 ├── workspace/             # DiaROSソースコード
 └── recordings/            # bag記録ファイル
 ```
@@ -186,3 +176,21 @@ DiaROSのライセンスに従います。詳細はDiaROSのドキュメント�
 - [DiaROS公式ドキュメント](https://github.com/yourusername/DiaROS_imamoto)
 - [ROS2 Humble Documentation](https://docs.ros.org/en/humble/)
 - [Docker Documentation](https://docs.docker.com/)
+
+## 付録：APIキーの使用（オプション）
+
+現在のDiaROSはローカルモデルを使用するため、APIキーは不要です。ただし、以下のAPIを使用したい場合は設定できます：
+
+### Google Cloud Speech-to-Text API（オプション）
+```bash
+# Google Cloud認証情報をconfigディレクトリに配置
+cp /path/to/your/google_credentials.json config/
+```
+
+### A3RT Talk API（オプション）
+```bash
+# A3RT APIキーをconfigディレクトリに配置
+cp /path/to/your/a3rt_apikey.data config/
+```
+
+これらのAPIを使用する場合は、docker-compose.ymlの環境変数セクションのコメントを解除してください。
