@@ -33,9 +33,15 @@ cd DiaROS_docker
 DiaROSのソースコードをworkspaceディレクトリにコピーまたはクローンしてください：
 
 ```bash
-# 例: GitHubからクローン
+# 例: GitHubからクローン（方法1：workspace内の.gitkeepを削除してからクローン）
+rm workspace/.gitkeep
+git clone https://github.com/sayonari/DiaROS_imamoto.git workspace
+
+# または（方法2：workspace内でクローン後、内容を移動）
 cd workspace
-git clone https://github.com/sayonari/DiaROS_imamoto.git .
+git clone https://github.com/sayonari/DiaROS_imamoto.git temp
+mv temp/* temp/.* . 2>/dev/null || true
+rm -rf temp
 cd ..
 ```
 
