@@ -57,17 +57,16 @@ RUN apt-get update && apt-get install -y \
     ros-${ROS_DISTRO}-ros2action \
     && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip and install Python packages
-RUN python3 -m pip install --upgrade pip setuptools wheel
+# Upgrade pip and install Python packages with compatible setuptools version
+RUN python3 -m pip install --upgrade pip && \
+    python3 -m pip install setuptools==65.5.0 wheel
 
 # Install Python packages for speech processing
 # Install pyaudio with its dependencies
 RUN pip3 install --no-cache-dir pyaudio
 
-# Install other Python packages
+# Install other Python packages (skip aubio due to compatibility issues)
 RUN pip3 install --no-cache-dir \
-    # Audio processing
-    aubio \
     # Speech recognition
     SpeechRecognition \
     # Other utilities
