@@ -14,10 +14,12 @@
 
 ## 必要な環境
 
-- Docker 20.10以降
-- Docker Compose 2.0以降
+- Docker Desktop（Docker 20.10以降）
+- Docker Compose 2.0以降（Docker Desktopに含まれています）
 - （macOSの場合）XQuartz（GUI表示用）
 - 8GB以上のRAM推奨
+
+**注意**: macOSやWindowsでは、Docker Desktopが起動していることを確認してください。
 
 ## セットアップ
 
