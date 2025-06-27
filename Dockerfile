@@ -22,6 +22,7 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     python3-dev \
     python3-setuptools \
+    python3-wheel \
     # Audio processing dependencies
     portaudio19-dev \
     libasound2-dev \
@@ -60,9 +61,8 @@ RUN apt-get update && apt-get install -y \
 RUN python3 -m pip install --upgrade pip setuptools wheel
 
 # Install Python packages for speech processing
-# First install pyaudio separately with specific version
-RUN pip3 install --no-cache-dir setuptools wheel && \
-    pip3 install --no-cache-dir pyaudio==0.2.11
+# Install pyaudio with its dependencies
+RUN pip3 install --no-cache-dir pyaudio
 
 # Install other Python packages
 RUN pip3 install --no-cache-dir \
