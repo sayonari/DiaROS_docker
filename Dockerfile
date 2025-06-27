@@ -60,24 +60,25 @@ RUN apt-get update && apt-get install -y \
 RUN python3 -m pip install --upgrade pip setuptools wheel
 
 # Install Python packages for speech processing
+# First install pyaudio separately with specific version
+RUN pip3 install --no-cache-dir setuptools wheel && \
+    pip3 install --no-cache-dir pyaudio==0.2.11
+
+# Install other Python packages
 RUN pip3 install --no-cache-dir \
     # Audio processing
-    pyaudio \
     aubio \
     # Speech recognition
     SpeechRecognition \
-    # Machine learning (CPU version to save space)
-    torch --index-url https://download.pytorch.org/whl/cpu \
-    transformers \
-    # Japanese language models dependencies
-    sentencepiece \
-    fugashi \
-    unidic-lite \
     # Other utilities
     numpy \
     scipy \
     requests \
     pyyaml
+
+# Install PyTorch and transformers separately to handle index URL
+RUN pip3 install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu && \
+    pip3 install --no-cache-dir transformers sentencepiece fugashi unidic-lite
 
 # Install VOICEVOX Core (lightweight version without GUI)
 RUN mkdir -p /opt/voicevox && \
