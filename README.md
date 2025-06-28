@@ -111,7 +111,32 @@ cd ..
 
 ## 4. 使用方法
 
-### 4.1 コンテナの起動
+### 4.1 macOSの場合の事前準備（音声入力を使用する場合）
+
+音声入力機能を使用する場合は、コンテナ起動前に以下の手順でPulseAudioを起動してください：
+
+**方法1: 自動セットアップスクリプト（推奨）**
+```bash
+./scripts/start_audio_macos.sh
+```
+
+**方法2: 手動セットアップ**
+```bash
+# 1. PulseAudioが起動していない場合は起動
+ps aux | grep pulseaudio | grep -v grep || \
+  pulseaudio --load=module-native-protocol-tcp --exit-idle-time=-1 --daemon
+
+# 2. TCP接続モジュールを追加（ポート4713）
+pactl load-module module-native-protocol-tcp auth-anonymous=1 port=4713 2>/dev/null || true
+
+# 3. 接続確認
+lsof -i :4713 && echo "✅ PulseAudioが準備完了" || echo "❌ PulseAudioの起動に失敗"
+```
+
+**初回のみ必要な設定:**
+- システム設定 → プライバシーとセキュリティ → マイク → ターミナルにチェック
+
+### 4.2 コンテナの起動
 
 ```bash
 ./scripts/run.sh
@@ -137,7 +162,20 @@ ros2 launch diaros_package sdsmod.launch.py
 
 **注意**: 初回起動時には、HuggingFaceへのログインが必要な場合があります（[トラブルシューティング](#62-huggingfaceモデルのアクセスエラー)参照）。
 
-### 4.2 モニタリングツール
+### 4.3 音声入力の動作確認（オプション）
+
+コンテナ内で音声入力が正しく動作するか確認する場合：
+
+```bash
+# 音声テストツールを実行
+python3 /workspace/scripts/test_audio.py
+
+# または簡易テスト
+pactl info  # PulseAudioサーバーへの接続確認
+pactl list sources short  # 利用可能なマイクデバイス一覧
+```
+
+### 4.4 モニタリングツール
 
 別のターミナルで以下を実行：
 
@@ -152,7 +190,7 @@ ros2 launch diaros_package sdsmod.launch.py
 - rqt_bag: 記録データの確認
 - ros2 bag record: データの記録
 
-### 4.3 データの記録
+### 4.5 データの記録
 
 ```bash
 # 全トピックを記録
