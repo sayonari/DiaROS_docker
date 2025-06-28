@@ -278,24 +278,73 @@ python3 -m pip install .
    docker-compose up -d
    ```
 
-### 6.4 音声デバイスが認識されない場合
+### 6.4 音声デバイスが認識されない場合（macOS）
 
 `OSError: No Default Input Device Available`エラーが出る場合：
 
-**macOSの場合:**
-1. macOSのシステム環境設定 → セキュリティとプライバシー → プライバシー → マイク
-2. Docker Desktopがマイクへのアクセスを許可されているか確認
-3. 許可されていない場合は、チェックボックスをオンにする
-4. Docker Desktopを再起動
+**Docker Desktopの制限について:**
+macOSのDocker Desktopは、セキュリティ上の理由により、ホストのオーディオデバイスへの直接アクセスを制限しています。システム環境設定でDocker Desktopにマイクアクセスを許可する項目は表示されません。
 
-**Linuxの場合:**
-```bash
-# ホストでオーディオグループに追加
-sudo usermod -a -G audio $USER
-# 再ログインまたは再起動
-```
+#### 方法1: PulseAudioを使用した音声転送（推奨、内蔵マイク向け）
 
-Docker設定で`privileged: true`が有効になっていることも確認してください。
+1. **macOSホストでPulseAudioをインストール・起動**
+   ```bash
+   brew install pulseaudio
+   # 初回実行時：システム設定でターミナルにマイク許可を与える
+   pulseaudio --load=module-native-protocol-tcp \
+              --exit-idle-time=-1 --daemonize
+   ```
+
+2. **Docker Desktopでホストネットワーキングを有効化**
+   - Docker Desktop → Preferences → Resources → Network
+   - "Enable host networking"にチェック（要Docker Desktop 4.34以降）
+   - Docker Desktopを再起動
+
+3. **コンテナを実行**
+   ```bash
+   docker run --rm -it \
+     --network host \
+     -e PULSE_SERVER=host.docker.internal \
+     -v $HOME/.config/pulse:/home/app/.config/pulse \
+     diaros_container bash
+   ```
+
+4. **コンテナ内でテスト**
+   ```bash
+   apt-get update && apt-get install -y sox pulseaudio-utils
+   rec -t wav - trim 0 5 | aplay -
+   # 自分の声がエコーバックされれば成功
+   ```
+
+#### 方法2: USB/IPを使用したUSBマイクのパススルー
+
+**要件**: Docker Desktop 4.35以降、外部USBマイクのみ対応
+
+1. **バージョン確認**
+   - Docker Desktop → About で 4.35.0 以降であることを確認
+
+2. **macOSホストでUSB/IPサーバーを起動**
+   ```bash
+   brew install rustup
+   git clone https://github.com/jiegec/usbip && cd usbip
+   env RUST_LOG=info cargo run --example hid_keyboard   # または使用するマイクのVID/PID
+   ```
+
+3. **ヘルパーコンテナで接続（privileged）**
+   ```bash
+   docker run --rm -it --privileged --pid=host docker/usbip nsenter -t 1 -m
+   usbip list -r host.docker.internal   # BUSIDを確認
+   usbip attach -r host.docker.internal -b <BUSID>
+   ```
+
+4. **アプリケーションコンテナを起動**
+   ```bash
+   docker run --rm -it \
+     --device /dev/snd --device /dev/your-mic-node \
+     diaros_container …
+   ```
+
+**注意**: ヘルパーコンテナは動作中維持する必要があります。終了するとデバイスが切断されます。
 
 ### 6.5 メモリ不足エラー
 
