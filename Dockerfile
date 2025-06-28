@@ -28,6 +28,13 @@ RUN apt-get update && apt-get install -y \
     libasound2-dev \
     libaubio-dev \
     libsndfile1-dev \
+    ffmpeg \
+    # GStreamer for audio playback
+    gstreamer1.0-tools \
+    gstreamer1.0-plugins-base \
+    gstreamer1.0-plugins-good \
+    gstreamer1.0-python3-plugin-loader \
+    python3-gst-1.0 \
     # GUI dependencies for rqt
     python3-pyqt5 \
     pyqt5-dev-tools \
@@ -59,7 +66,8 @@ RUN apt-get update && apt-get install -y \
 
 # Upgrade pip and install Python packages with compatible setuptools version
 RUN python3 -m pip install --upgrade pip && \
-    python3 -m pip install setuptools==65.5.0 wheel
+    python3 -m pip install setuptools==65.5.0 wheel && \
+    python3 -m pip install --force-reinstall "numpy<2"
 
 # Install Python packages for speech processing
 # Install pyaudio with its dependencies
@@ -74,13 +82,13 @@ RUN pip3 install --no-cache-dir \
     webrtcvad \
     librosa \
     soundfile \
-    # GUI support for playsound (skip if fails)
-    # pygobject \
+    pydub \
     # Other utilities
     numpy \
     scipy \
     requests \
-    pyyaml
+    pyyaml \
+    huggingface-hub
 
 # Install aubio Python bindings (try binary wheel first, fallback to source)
 RUN pip3 install --no-cache-dir aubio || echo "Warning: aubio installation failed, using system library only"

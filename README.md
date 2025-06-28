@@ -135,6 +135,8 @@ python3 -m pip install .
 ros2 launch diaros_package sdsmod.launch.py
 ```
 
+**注意**: 初回起動時には、HuggingFaceへのログインが必要な場合があります（[トラブルシューティング](#62-huggingfaceモデルのアクセスエラー)参照）。
+
 ### 4.2 モニタリングツール
 
 別のターミナルで以下を実行：
@@ -188,7 +190,16 @@ DiaROS_docker/
 
 ```bash
 # コンテナ内で以下を実行
-pip3 install librosa soundfile pygobject playsound webrtcvad aubio
+pip3 install librosa soundfile pydub playsound webrtcvad aubio huggingface-hub
+
+# NumPyの互換性問題がある場合
+pip3 install --force-reinstall "numpy<2"
+
+# GStreamerエラーの場合
+apt-get update && apt-get install -y \
+    gstreamer1.0-python3-plugin-loader \
+    python3-gst-1.0 \
+    ffmpeg
 ```
 
 または、Dockerイメージを再ビルド：
