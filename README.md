@@ -228,7 +228,28 @@ DiaROS_docker/
 
 ## 6. トラブルシューティング
 
-### 6.1 Pythonパッケージの不足エラー
+### 6.1 Docker内で音声デバイスが認識されない場合
+
+Docker内で`set_default_mic.py`実行時にALSAエラーが出る場合：
+
+```bash
+# コンテナ内で以下を実行
+./scripts/docker_audio_setup.sh
+```
+
+このスクリプトは：
+- PulseAudio接続を確認
+- PyAudioをPulseAudio経由で動作するよう設定
+- 利用可能なデバイスを表示
+
+それでも解決しない場合は、コンテナを再起動して環境変数を反映：
+```bash
+docker-compose down
+docker-compose up -d
+docker exec -it diaros_container bash
+```
+
+### 6.2 Pythonパッケージの不足エラー
 
 `ModuleNotFoundError: No module named 'librosa'`などのエラーが出る場合：
 

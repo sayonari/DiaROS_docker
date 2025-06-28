@@ -13,6 +13,9 @@ services:
       - QT_X11_NO_MITSHM=1
       # PulseAudio settings for macOS audio
       - PULSE_SERVER=tcp:host.docker.internal:4713
+      # PyAudio/SDL audio driver settings
+      - AUDIODRIVER=pulse
+      - SDL_AUDIODRIVER=pulse
       # Optional API credentials paths (for backward compatibility)
       # - GOOGLE_APPLICATION_CREDENTIALS=/config/google_credentials.json
       # - A3RT_APIKEY=/config/a3rt_apikey.data
