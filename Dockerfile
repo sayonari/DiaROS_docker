@@ -71,7 +71,7 @@ RUN apt-get update && apt-get install -y \
 # Upgrade pip and install Python packages with compatible setuptools version
 RUN python3 -m pip install --upgrade pip && \
     python3 -m pip install setuptools==65.5.0 wheel && \
-    python3 -m pip install --force-reinstall "numpy>=1.17.3,<1.25.0"
+    python3 -m pip install --force-reinstall "numpy==1.24.3"
 
 # Install Python packages for speech processing
 # Install pyaudio with its dependencies
@@ -88,13 +88,16 @@ RUN pip3 install --no-cache-dir \
     soundfile \
     pydub \
     # Other utilities (scipy needs compatible numpy version)
-    "scipy>=1.7.0,<1.11.0" \
+    "scipy==1.10.1" \
     requests \
     pyyaml \
     huggingface-hub
 
-# Install aubio Python bindings (try binary wheel first, fallback to source)
-RUN pip3 install --no-cache-dir aubio || echo "Warning: aubio installation failed, using system library only"
+# Install aubio Python bindings with numpy 1.x compatibility
+# First ensure numpy is at correct version, then install aubio
+RUN python3 -m pip install --no-cache-dir --no-deps aubio==0.4.9 && \
+    python3 -c "import aubio; print('aubio successfully installed with numpy', aubio.__version__)" || \
+    echo "Warning: aubio installation failed, using system library only"
 
 # Install PyTorch and transformers separately to handle index URL
 # Use ignore-installed to bypass system sympy

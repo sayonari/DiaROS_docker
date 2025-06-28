@@ -231,7 +231,9 @@ DiaROS_docker/
 pip3 install librosa soundfile pydub playsound webrtcvad aubio huggingface-hub
 
 # NumPyの互換性問題がある場合
-pip3 install --force-reinstall "numpy<2"
+pip3 install --force-reinstall "numpy==1.24.3"
+# aubioを再インストールする場合は--no-depsオプションを使用
+pip3 install --no-cache-dir --no-deps aubio==0.4.9
 
 # GStreamerエラーの場合
 apt-get update && apt-get install -y \
