@@ -23,6 +23,8 @@ RUN apt-get update && apt-get install -y \
     python3-dev \
     python3-setuptools \
     python3-wheel \
+    python3-numpy \
+    python3-numpy-dev \
     # Audio processing dependencies
     portaudio19-dev \
     libasound2-dev \
@@ -67,7 +69,7 @@ RUN apt-get update && apt-get install -y \
 # Upgrade pip and install Python packages with compatible setuptools version
 RUN python3 -m pip install --upgrade pip && \
     python3 -m pip install setuptools==65.5.0 wheel && \
-    python3 -m pip install --force-reinstall "numpy<2"
+    python3 -m pip install --force-reinstall "numpy>=1.17.3,<1.25.0"
 
 # Install Python packages for speech processing
 # Install pyaudio with its dependencies
@@ -83,9 +85,8 @@ RUN pip3 install --no-cache-dir \
     librosa \
     soundfile \
     pydub \
-    # Other utilities
-    numpy \
-    scipy \
+    # Other utilities (scipy needs compatible numpy version)
+    "scipy>=1.7.0,<1.11.0" \
     requests \
     pyyaml \
     huggingface-hub

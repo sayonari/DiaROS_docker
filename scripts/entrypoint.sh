@@ -16,6 +16,12 @@ export DISPLAY=${DISPLAY:-:0}
 mkdir -p /recordings
 mkdir -p /config
 
+# Copy power_calibration.wav to the expected location if it exists
+if [ -f "/workspace/DiaROS_ros/power_calibration.wav" ] && [ ! -f "/workspace/DiaROS_py/power_calibration.wav" ]; then
+    echo "Copying power_calibration.wav to /workspace/DiaROS_py/"
+    cp /workspace/DiaROS_ros/power_calibration.wav /workspace/DiaROS_py/
+fi
+
 # Note: API credentials are optional as DiaROS now uses local models by default
 
 # Print ROS2 environment info
