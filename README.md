@@ -158,9 +158,10 @@ python3 -m pip install .
 
 # （オプション）音声デバイスの設定とテスト
 cd /workspace
-python3 scripts/set_default_mic.py
 # ALSAエラーが出る場合は先に以下を実行
-# ./scripts/docker_audio_setup.sh
+./scripts/docker_audio_setup.sh
+# その後、デバイス設定
+python3 scripts/set_default_mic.py
 
 # システムの起動
 ros2 launch diaros_package sdsmod.launch.py
@@ -236,6 +237,7 @@ Docker内で`set_default_mic.py`実行時にALSAエラーが出る場合：
 
 ```bash
 # コンテナ内で以下を実行
+cd /workspace
 ./scripts/docker_audio_setup.sh
 ```
 
