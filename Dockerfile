@@ -31,6 +31,8 @@ RUN apt-get update && apt-get install -y \
     libaubio-dev \
     libsndfile1-dev \
     ffmpeg \
+    pulseaudio-utils \
+    sox \
     # GStreamer for audio playback
     gstreamer1.0-tools \
     gstreamer1.0-plugins-base \
