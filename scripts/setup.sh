@@ -143,9 +143,10 @@ echo ""
 echo "Next steps:"
 echo "1. Copy your DiaROS source code to ./workspace/"
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    echo "2. (macOS) 音声セットアップ: ./scripts/setup_audio_macos.sh"
-    echo "3. (macOS) 音声テスト: ./scripts/test_audio.sh"
-    echo "4. Run: ./scripts/run.sh"
+    echo "2. (macOS) 音声テスト: ./scripts/test_audio.sh"
+    echo "3. Run: ./scripts/run.sh"
+    echo ""
+    echo "※ 音声セットアップを実行していない場合は: ./scripts/setup_audio_macos.sh"
 else
     echo "2. Run: ./scripts/run.sh"
 fi
