@@ -235,23 +235,39 @@ DiaROS_docker/
 
 Docker内で`set_default_mic.py`実行時にALSAエラーが出る場合：
 
+**方法1: 簡易設定（まず試す）**
 ```bash
 # コンテナ内で以下を実行
 cd /workspace
 ./scripts/docker_audio_setup.sh
 ```
 
-このスクリプトは：
-- PulseAudio接続を確認
-- PyAudioをPulseAudio経由で動作するよう設定
-- 利用可能なデバイスを表示
-
-それでも解決しない場合は、コンテナを再起動して環境変数を反映：
+**方法2: PyAudioの再インストール（方法1で解決しない場合）**
 ```bash
-docker-compose down
-docker-compose up -d
+# ホスト側からスクリプトをコンテナにコピー
+docker cp scripts/install_pyaudio_pulse.sh diaros_container:/tmp/
+
+# コンテナ内で実行
+docker exec -it diaros_container bash
+/tmp/install_pyaudio_pulse.sh
+
+# コンテナを再起動
+exit
+docker-compose restart
 docker exec -it diaros_container bash
 ```
+
+**方法3: Dockerイメージの再ビルド（根本的な解決）**
+```bash
+# Dockerイメージを再ビルド
+docker-compose build --no-cache
+docker-compose up -d
+```
+
+これらのスクリプトは：
+- PulseAudio接続を確認
+- ALSAプラグインをインストール
+- PyAudioをPulseAudio経由で動作するよう設定
 
 ### 6.2 Pythonパッケージの不足エラー
 

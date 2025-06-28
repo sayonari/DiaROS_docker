@@ -28,9 +28,11 @@ RUN apt-get update && apt-get install -y \
     # Audio processing dependencies
     portaudio19-dev \
     libasound2-dev \
+    libasound2-plugins \
     libaubio-dev \
     libsndfile1-dev \
     ffmpeg \
+    pulseaudio \
     pulseaudio-utils \
     sox \
     # GStreamer for audio playback
