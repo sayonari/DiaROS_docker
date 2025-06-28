@@ -32,15 +32,20 @@ fi
 
 # Check for XQuartz on macOS
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    if ! command -v xquartz &> /dev/null && ! pgrep -x "XQuartz" > /dev/null; then
+    if ! pgrep -f "XQuartz|X11\.bin|Xquartz" > /dev/null; then
         echo "Warning: XQuartz may not be running."
         echo "Please ensure XQuartz is installed and running:"
         echo "  1. Install XQuartz from https://www.xquartz.org/"
         echo "  2. Open XQuartz"
         echo "  3. In XQuartz preferences, go to Security tab"
         echo "  4. Check 'Allow connections from network clients'"
-        echo "  5. Run: xhost +localhost"
+        echo "  5. Run: /opt/X11/bin/xhost +localhost"
         echo ""
+    else
+        # Try to set xhost if XQuartz is running
+        if [ -x "/opt/X11/bin/xhost" ]; then
+            /opt/X11/bin/xhost +localhost 2>/dev/null || true
+        fi
     fi
 fi
 
@@ -52,27 +57,27 @@ while true; do
     case $choice in
         1)
             echo "Starting rqt..."
-            docker exec -it diaros_container bash -c "source /opt/ros/humble/setup.bash && rqt"
+            docker exec -it -e DISPLAY=host.docker.internal:0 diaros_container bash -c "source /opt/ros/humble/setup.bash && rqt"
             ;;
         2)
             echo "Starting rqt_graph..."
-            docker exec -it diaros_container bash -c "source /opt/ros/humble/setup.bash && rqt_graph"
+            docker exec -it -e DISPLAY=host.docker.internal:0 diaros_container bash -c "source /opt/ros/humble/setup.bash && rqt_graph"
             ;;
         3)
             echo "Starting rqt_plot..."
-            docker exec -it diaros_container bash -c "source /opt/ros/humble/setup.bash && rqt_plot"
+            docker exec -it -e DISPLAY=host.docker.internal:0 diaros_container bash -c "source /opt/ros/humble/setup.bash && rqt_plot"
             ;;
         4)
             echo "Starting rqt_topic..."
-            docker exec -it diaros_container bash -c "source /opt/ros/humble/setup.bash && rqt_topic"
+            docker exec -it -e DISPLAY=host.docker.internal:0 diaros_container bash -c "source /opt/ros/humble/setup.bash && rqt_topic"
             ;;
         5)
             echo "Starting rqt_bag..."
-            docker exec -it diaros_container bash -c "source /opt/ros/humble/setup.bash && rqt_bag"
+            docker exec -it -e DISPLAY=host.docker.internal:0 diaros_container bash -c "source /opt/ros/humble/setup.bash && rqt_bag"
             ;;
         6)
             echo "Starting rqt_console..."
-            docker exec -it diaros_container bash -c "source /opt/ros/humble/setup.bash && rqt_console"
+            docker exec -it -e DISPLAY=host.docker.internal:0 diaros_container bash -c "source /opt/ros/humble/setup.bash && rqt_console"
             ;;
         7)
             echo "Listing ROS2 topics..."
