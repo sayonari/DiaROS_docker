@@ -282,69 +282,44 @@ python3 -m pip install .
 
 `OSError: No Default Input Device Available`エラーが出る場合：
 
-**Docker Desktopの制限について:**
-macOSのDocker Desktopは、セキュリティ上の理由により、ホストのオーディオデバイスへの直接アクセスを制限しています。システム環境設定でDocker Desktopにマイクアクセスを許可する項目は表示されません。
+詳細な手順は[docs/macos_audio_setup.md](docs/macos_audio_setup.md)を参照してください。
 
-#### 方法1: PulseAudioを使用した音声転送（推奨、内蔵マイク向け）
+#### クイックスタート（PulseAudio方式）
 
-1. **macOSホストでPulseAudioをインストール・起動**
+1. **macOSホストでPulseAudioをセットアップ**
    ```bash
+   # PulseAudioをインストール
    brew install pulseaudio
-   # 初回実行時：システム設定でターミナルにマイク許可を与える
-   pulseaudio --load=module-native-protocol-tcp \
-              --exit-idle-time=-1 --daemonize
+   
+   # マイク権限を付与（システム設定 → プライバシーとセキュリティ → マイク → ターミナルにチェック）
+   
+   # PulseAudioサーバーを起動
+   pulseaudio --load=module-native-protocol-tcp --exit-idle-time=-1 --daemon --verbose
+   
+   # TCP接続を許可（ポート4713）
+   pactl load-module module-native-protocol-tcp auth-anonymous=1 port=4713
    ```
 
-2. **Docker Desktopでホストネットワーキングを有効化**
-   - Docker Desktop → Preferences → Resources → Network
-   - "Enable host networking"にチェック（要Docker Desktop 4.34以降）
-   - Docker Desktopを再起動
+2. **docker-compose.ymlを更新**
+   ```yaml
+   services:
+     diaros:
+       # 既存の設定に追加
+       privileged: true
+       environment:
+         - PULSE_SERVER=tcp:host.docker.internal:4713
+   ```
 
-3. **コンテナを実行**
+3. **コンテナ内でテスト**
    ```bash
-   docker run --rm -it \
-     --network host \
-     -e PULSE_SERVER=host.docker.internal \
-     -v $HOME/.config/pulse:/home/app/.config/pulse \
-     diaros_container bash
+   # 音声テストツールを実行
+   python3 /workspace/scripts/test_audio.py
    ```
 
-4. **コンテナ内でテスト**
-   ```bash
-   apt-get update && apt-get install -y sox pulseaudio-utils
-   rec -t wav - trim 0 5 | aplay -
-   # 自分の声がエコーバックされれば成功
-   ```
-
-#### 方法2: USB/IPを使用したUSBマイクのパススルー
-
-**要件**: Docker Desktop 4.35以降、外部USBマイクのみ対応
-
-1. **バージョン確認**
-   - Docker Desktop → About で 4.35.0 以降であることを確認
-
-2. **macOSホストでUSB/IPサーバーを起動**
-   ```bash
-   brew install rustup
-   git clone https://github.com/jiegec/usbip && cd usbip
-   env RUST_LOG=info cargo run --example hid_keyboard   # または使用するマイクのVID/PID
-   ```
-
-3. **ヘルパーコンテナで接続（privileged）**
-   ```bash
-   docker run --rm -it --privileged --pid=host docker/usbip nsenter -t 1 -m
-   usbip list -r host.docker.internal   # BUSIDを確認
-   usbip attach -r host.docker.internal -b <BUSID>
-   ```
-
-4. **アプリケーションコンテナを起動**
-   ```bash
-   docker run --rm -it \
-     --device /dev/snd --device /dev/your-mic-node \
-     diaros_container …
-   ```
-
-**注意**: ヘルパーコンテナは動作中維持する必要があります。終了するとデバイスが切断されます。
+**トラブルシューティング:**
+- PulseAudioが起動しない場合: `ps aux | grep pulseaudio`で確認
+- 接続できない場合: `lsof -i :4713`でポート確認
+- 詳細な設定とUSB/IP方式については[docs/macos_audio_setup.md](docs/macos_audio_setup.md)参照
 
 ### 6.5 メモリ不足エラー
 
