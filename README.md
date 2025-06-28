@@ -156,6 +156,14 @@ source ./install/local_setup.bash
 cd ../DiaROS_py
 python3 -m pip install .
 
+# （オプション）HuggingFaceトークンの設定（ターンテイキング機能を使用する場合）
+# 方法1: 環境変数として設定
+export HF_TOKEN=your_huggingface_token
+
+# 方法2: HuggingFace CLIでログイン（推奨）
+huggingface-cli login
+# プロンプトが表示されたらトークンを入力
+
 # （オプション）音声デバイスの設定とテスト
 cd /workspace
 # ALSAエラーが出る場合は先に以下を実行
@@ -164,8 +172,13 @@ cd /workspace
 python3 scripts/set_default_mic.py
 
 # システムの起動
+# 方法1: 統合起動スクリプト（推奨）
+./scripts/start_diaros.sh
+
+# 方法2: 手動起動
 ros2 launch diaros_package sdsmod.launch.py
-# または設定済みスクリプトを使用
+
+# 方法3: 音声デバイス設定済みスクリプト
 /workspace/config/launch_diaros_with_mic.sh
 ```
 

@@ -130,9 +130,10 @@ RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> /root/.bashrc
 # Set working directory
 WORKDIR /workspace
 
-# Copy entrypoint script
+# Copy scripts
 COPY scripts/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY scripts/start_diaros.sh /workspace/scripts/start_diaros.sh
+RUN chmod +x /entrypoint.sh /workspace/scripts/start_diaros.sh
 
 # Set entrypoint
 ENTRYPOINT ["/entrypoint.sh"]

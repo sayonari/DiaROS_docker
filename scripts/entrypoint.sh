@@ -16,7 +16,13 @@ export DISPLAY=${DISPLAY:-:0}
 mkdir -p /recordings
 mkdir -p /config
 
-# Copy power_calibration.wav to the expected location if it exists
+# Copy power_calibration.wav to the expected locations
+if [ -f "/workspace/DiaROS_py/power_calibration.wav" ] && [ ! -f "/workspace/power_calibration.wav" ]; then
+    echo "Copying power_calibration.wav to /workspace/"
+    cp /workspace/DiaROS_py/power_calibration.wav /workspace/
+fi
+
+# Also ensure it exists in DiaROS_ros if needed
 if [ -f "/workspace/DiaROS_ros/power_calibration.wav" ] && [ ! -f "/workspace/DiaROS_py/power_calibration.wav" ]; then
     echo "Copying power_calibration.wav to /workspace/DiaROS_py/"
     cp /workspace/DiaROS_ros/power_calibration.wav /workspace/DiaROS_py/
