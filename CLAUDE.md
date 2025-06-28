@@ -22,3 +22,8 @@
 ### 既知の問題
 - NumPy 2.xとaubioの互換性問題：NumPy 1.24.3に固定して使用
 - macOSでのDocker音声入力：PulseAudioまたはUSB/IP経由での接続が必要
+
+### 音声デバイス設定
+- デフォルトでは自動的に利用可能なデバイスを検出
+- 環境変数`AUDIO_DEVICE_INDEX`で特定のデバイスを指定可能
+- Docker環境では自動的にPulseAudioデバイスを優先選択

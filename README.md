@@ -322,6 +322,8 @@ python3 -m pip install .
 
 `OSError: No Default Input Device Available`エラーが出る場合：
 
+**注意**: 最新バージョンでは音声デバイスの自動検出機能が追加されました。Docker環境では自動的にPulseAudioデバイスを検出して使用します。
+
 詳細な手順は[docs/macos_audio_setup.md](docs/macos_audio_setup.md)を参照してください。
 
 #### クイックスタート（PulseAudio方式）
