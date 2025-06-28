@@ -156,8 +156,14 @@ source ./install/local_setup.bash
 cd ../DiaROS_py
 python3 -m pip install .
 
+# （オプション）音声デバイスの設定とテスト
+cd /workspace
+python3 scripts/set_default_mic.py
+
 # システムの起動
 ros2 launch diaros_package sdsmod.launch.py
+# または設定済みスクリプトを使用
+/workspace/config/launch_diaros_with_mic.sh
 ```
 
 **注意**: 初回起動時には、HuggingFaceへのログインが必要な場合があります（[トラブルシューティング](#62-huggingfaceモデルのアクセスエラー)参照）。
