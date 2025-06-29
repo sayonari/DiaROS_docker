@@ -88,4 +88,4 @@ export ALSA_CARD="null"
 
 # DiaROSの起動
 cd /workspace
-ros2 launch diaros_package sdsmod.launch.py 2>&1 | grep -v "ALSA lib" | grep -v "Cannot connect to server socket" | grep -v "jack server is not running"
+ros2 launch diaros_package sdsmod.launch.py
