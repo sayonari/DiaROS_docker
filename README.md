@@ -145,6 +145,45 @@ lsof -i :4713 && echo "✅ PulseAudioが準備完了" || echo "❌ PulseAudioの
 コンテナ内でDiaROSを起動：
 
 ```bash
+# DiaROSの起動（すべて自動化）
+./scripts/start_diaros.sh
+```
+
+このスクリプトは以下を自動的に実行します：
+- ✅ 初回必要なビルドの確認と実行
+- ✅ Pythonモジュールのインストール確認
+- ✅ power_calibration.wavの存在確認（自動コピー済み）
+- ✅ HuggingFaceトークンの確認と設定案内
+- ✅ 音声デバイス設定の読み込み
+- ✅ DiaROSの起動
+
+**注意**: 
+- ALSAエラーメッセージは無視して構いません（PulseAudio経由で正常に動作しています）
+- HuggingFaceトークンを設定していない場合、ターンテイキングノードはエラーになりますが、他の機能は正常に動作します
+
+<details>
+<summary>💡 音声デバイスの設定とテスト</summary>
+
+音声デバイスの設定を変更したい場合：
+
+```bash
+# Docker内で音声設定をセットアップ
+./scripts/docker_audio_setup.sh
+
+# デバイスを選択して設定
+python3 scripts/set_default_mic.py
+
+# 音声入力のテスト
+python3 scripts/test_audio_simple.py
+```
+</details>
+
+<details>
+<summary>🔧 手動ビルド手順（デバッグ用）</summary>
+
+デバッグやカスタマイズが必要な場合の手動手順：
+
+```bash
 # ワークスペースのビルド
 cd /workspace/DiaROS_ros
 colcon build --cmake-args -DCMAKE_C_FLAGS=-fPIC --packages-select interfaces
@@ -156,46 +195,20 @@ source ./install/local_setup.bash
 cd ../DiaROS_py
 python3 -m pip install .
 
-# （オプション）HuggingFaceトークンの設定（ターンテイキング機能を使用する場合）
-# 方法1: 環境変数として設定
-export HF_TOKEN=your_huggingface_token
+# HuggingFaceトークンの設定（ターンテイキング使用時）
+export HF_TOKEN=$HF_TOKEN  # .envから読み込まれたトークンを使用
+# または
+huggingface-cli login  # コンテナ内で直接ログイン
 
-# 方法2: HuggingFace CLIでログイン（推奨）
-huggingface-cli login
-# プロンプトが表示されたらトークンを入力
-
-# （オプション）音声デバイスの設定とテスト
+# 手動起動
 cd /workspace
-# ALSAエラーが出る場合は先に以下を実行
-./scripts/docker_audio_setup.sh
-# その後、デバイス設定
-python3 scripts/set_default_mic.py
-
-# システムの起動
-# 方法1: 統合起動スクリプト（推奨）
-./scripts/start_diaros.sh
-
-# 方法2: 手動起動
 ros2 launch diaros_package sdsmod.launch.py
-
-# 方法3: 音声デバイス設定済みスクリプト
-/workspace/config/launch_diaros_with_mic.sh
 ```
+</details>
 
-**注意**: 初回起動時には、HuggingFaceへのログインが必要な場合があります（[トラブルシューティング](#62-huggingfaceモデルのアクセスエラー)参照）。
+### 4.3 DiaROSの停止
 
-### 4.3 音声入力の動作確認（オプション）
-
-コンテナ内で音声入力が正しく動作するか確認する場合：
-
-```bash
-# 音声テストツールを実行
-python3 /workspace/scripts/test_audio.py
-
-# または簡易テスト
-pactl info  # PulseAudioサーバーへの接続確認
-pactl list sources short  # 利用可能なマイクデバイス一覧
-```
+DiaROSを停止するには、コンテナ内で `Ctrl+C` を押します。
 
 ### 4.4 モニタリングツール
 
