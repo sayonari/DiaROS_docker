@@ -83,8 +83,14 @@ if [ -f "/workspace/DiaROS_ros/install/local_setup.bash" ]; then
     source /workspace/DiaROS_ros/install/local_setup.bash
 fi
 
-# ALSAエラーメッセージを抑制
-export ALSA_CARD="null"
+# NumPy 1.xを強制（aubio互換性のため）
+echo -e "${YELLOW}🔧 NumPy互換性の確認...${NC}"
+python3 -c "import numpy; print(f'NumPy version: {numpy.__version__}')"
+if python3 -c "import numpy; exit(0 if numpy.__version__.startswith('2.') else 1)" 2>/dev/null; then
+    echo -e "${YELLOW}⚠️  NumPy 2.xが検出されました。aubio互換性のためNumPy 1.xにダウングレードします...${NC}"
+    pip3 install --force-reinstall "numpy==1.24.3"
+    echo -e "${GREEN}✅ NumPy 1.24.3にダウングレードしました${NC}"
+fi
 
 # DiaROSの起動
 cd /workspace
