@@ -92,6 +92,18 @@ if python3 -c "import numpy; exit(0 if numpy.__version__.startswith('2.') else 1
     echo -e "${GREEN}✅ NumPy 1.24.3にダウングレードしました${NC}"
 fi
 
+# CPU最適化の環境変数を設定（M1 Mac用）
+echo -e "${YELLOW}⚙️  CPU最適化を設定中...${NC}"
+# PyTorchのCPUスレッド数を最適化
+export OMP_NUM_THREADS=8
+export MKL_NUM_THREADS=8
+export OPENBLAS_NUM_THREADS=8
+# PyTorchの並列処理最適化
+export TORCH_NUM_THREADS=8
+# メモリアロケータの最適化
+export PYTORCH_ENABLE_MPS_FALLBACK=1
+echo -e "${GREEN}✅ CPU最適化設定が完了しました${NC}"
+
 # DiaROSの起動
 cd /workspace
 ros2 launch diaros_package sdsmod.launch.py
