@@ -133,7 +133,8 @@ WORKDIR /workspace
 # Copy scripts
 COPY scripts/entrypoint.sh /entrypoint.sh
 COPY scripts/start_diaros.sh /workspace/scripts/start_diaros.sh
-RUN chmod +x /entrypoint.sh /workspace/scripts/start_diaros.sh
+COPY scripts/suppress_alsa_errors.sh /scripts/suppress_alsa_errors.sh
+RUN chmod +x /entrypoint.sh /workspace/scripts/start_diaros.sh /scripts/suppress_alsa_errors.sh
 
 # Set entrypoint
 ENTRYPOINT ["/entrypoint.sh"]

@@ -41,5 +41,11 @@ echo "WORKSPACE: /workspace"
 echo "RECORDINGS: /recordings"
 echo "==================================="
 
+# Suppress ALSA error messages
+if [ -f "/scripts/suppress_alsa_errors.sh" ]; then
+    echo "Applying ALSA error suppression..."
+    /scripts/suppress_alsa_errors.sh
+fi
+
 # Execute the command passed to docker run
 exec "$@"

@@ -37,6 +37,8 @@ services:
       - ./recordings:/recordings
       # Share timezone with host
       - /etc/localtime:/etc/localtime:ro
+      # Custom ALSA configuration
+      - ./config/asound.conf:/etc/asound.conf:ro
     
     # Device access for audio
     devices:
