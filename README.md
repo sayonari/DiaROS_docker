@@ -108,6 +108,28 @@ cd ..
 
 **注意**: macOSの場合、setup.shが`.env`ファイルのDISPLAY変数を自動的に`host.docker.internal:0`に設定します。
 
+### 3.5 HuggingFaceトークンの設定（ターンテイキング機能を使用する場合）
+
+ターンテイキング機能を使用する場合は、HuggingFaceトークンの設定が必要です：
+
+1. [HuggingFace](https://huggingface.co/)でアカウントを作成
+2. [アクセストークン](https://huggingface.co/settings/tokens)を作成
+3. `.env`ファイルを編集してトークンを設定：
+
+```bash
+# .envファイルを編集
+nano .env  # または好きなエディタで開く
+
+# 以下の行のコメントを外してトークンを設定
+# HF_TOKEN=your_huggingface_token_here
+# ↓
+HF_TOKEN=hf_xxxxxxxxxxxxxxxxxxxxx  # 実際のトークンに置き換え
+```
+
+**注意**: 
+- トークンを設定しない場合、ターンテイキングノードはエラーになりますが、他の機能は正常に動作します
+- トークンは`.env`ファイルに保存され、コンテナ起動時に自動的に読み込まれます
+
 
 ## 4. 使用方法
 
